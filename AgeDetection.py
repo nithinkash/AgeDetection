@@ -41,13 +41,14 @@ train.Class.value_counts(normalize=True)
 
 
 train_y = lb.fit_transform(train.Class)
+print(train_y)
 train_y = tf.compat.v2.keras.utils.to_categorical(train_y)
 
-input_num_units = (32, 32, )
+input_num_units = (32, 32, 3)
 hidden_num_units = 500
 output_num_units = 3
 
-epochs = 5
+epochs = 10
 batch_size = 128
 model = Sequential([
   InputLayer(input_shape=input_num_units),
@@ -60,14 +61,21 @@ model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accura
 model.fit(train_x, train_y, batch_size=batch_size,epochs=epochs,verbose=1, validation_split=0.2)
 
 i = random.choice(train.index)
+print(i)
 img_name = train.ID[i]
 abc=img_name.replace('./Train/','')
 img = imread(os.path.join(data_dir, 'Train', abc))
-imshow(imresize(img, (128, 128)))
+
 pred = model.predict_classes(train_x)
-print('Original:', train.Class[i], 'Predicted:', lb.inverse_transform(pred[i]))
+pred=pred[i]
 
+if(pred==0):
+  print('Original:', train.Class[i], 'Predicted:MIDDLE' )
+elif(pred==1):
+   print('Original:', train.Class[i], 'Predicted:OLD' )
+elif(pred==2):
+    print('Original:', train.Class[i], 'Predicted:YOUNG' ) 
 
-
+imshow(imresize(img, (128, 128)))
 
 
